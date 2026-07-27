@@ -104,6 +104,74 @@
     .save-message { margin-top:12px; min-height:23px; font-size:13px; font-weight:750; }
     .save-message.ok { color:#cdefb5; }
     .save-message.error { color:#ffb9b9; }
+
+    .login-admin {
+      margin: 18px 0 27px;
+      padding: 27px;
+      border: 1px solid rgba(88,101,242,.34);
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(88,101,242,.12), rgba(16,23,32,.97));
+      box-shadow: var(--shadow);
+    }
+    .login-admin[hidden] { display: none; }
+    .login-admin-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 17px;
+    }
+    .login-admin-head h2 { margin: 3px 0 5px; font-size: 25px; }
+    .login-admin-head p { margin: 0; color: var(--muted); }
+    .login-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .login-stat {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(9,13,18,.52);
+    }
+    .login-stat b { display: block; font-size: 21px; }
+    .login-stat span { color: var(--muted); font-size: 13px; }
+    .login-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+    .login-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      background: rgba(9,13,18,.42);
+    }
+    .login-table th,
+    .login-table td {
+      padding: 12px 13px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .login-table th {
+      color: #dce4ed;
+      background: rgba(21,30,41,.88);
+      font-size: 12px;
+      letter-spacing: .35px;
+      text-transform: uppercase;
+    }
+    .login-table td { color: #ccd6e0; font-size: 14px; }
+    .login-table tr:last-child td { border-bottom: 0; }
+    .discord-id { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
+    .privacy-note {
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
     .rules-section { scroll-margin-top:20px; margin:18px 0; padding:27px; border:1px solid var(--line); border-radius:var(--radius); background:rgba(16,23,32,.93); box-shadow:0 10px 30px rgba(0,0,0,.12); }
     .section-head { display:flex; gap:13px; align-items:flex-start; margin-bottom:15px; }
     .number { width:38px; height:38px; flex:0 0 auto; display:grid; place-items:center; border:1px solid rgba(127,209,75,.30); border-radius:11px; color:#e1f3d6; background:rgba(127,209,75,.08); font-weight:900; }
@@ -146,7 +214,7 @@
       .auth-actions .btn, .team-actions .btn { flex:1; text-align:center; }
     }
     @media print {
-      aside, .auth-panel, .team-actions, .accept-box { display:none!important; }
+      aside, .auth-panel, .team-actions, .login-admin, .accept-box { display:none!important; }
       body { background:white; color:black; }
       main { max-width:none; padding:0; }
       .hero, .team-section, .rules-section, .notice { color:black; background:white; box-shadow:none; border-color:#aaa; }
@@ -165,6 +233,7 @@
       <input id="search" class="search" type="search" placeholder="Regeln durchsuchen …" aria-label="Regelwerk durchsuchen">
       <nav>
         <a href="#team-section">Projekt Mittelberg Team</a>
+        <a id="loginNavLink" href="#login-admin" hidden>Anmeldungen</a>
         <a href="#grundlagen">1. Geltungsbereich</a>
         <a href="#verhalten">2. Verhalten</a>
         <a href="#discord">3. Discord-Nutzung</a>
@@ -227,7 +296,53 @@
           </div>
         </div>
         <div id="teamGrid" class="team-grid" aria-live="polite"></div>
+
         <div id="saveMessage" class="save-message" aria-live="polite"></div>
+      </section>
+
+      <section id="login-admin" class="login-admin" hidden>
+        <div class="login-admin-head">
+          <div>
+            <div class="team-kicker">Nur für den Owner sichtbar</div>
+            <h2>Discord-Anmeldungen</h2>
+            <p>Hier siehst du, welche Discord-Konten sich erfolgreich angemeldet haben.</p>
+          </div>
+          <button id="refreshLoginsBtn" class="btn" type="button">Liste aktualisieren</button>
+        </div>
+
+        <div class="login-stats">
+          <div class="login-stat">
+            <b id="uniqueUsersCount">0</b>
+            <span>verschiedene Benutzer</span>
+          </div>
+          <div class="login-stat">
+            <b id="totalLoginsCount">0</b>
+            <span>Anmeldungen insgesamt</span>
+          </div>
+        </div>
+
+        <div class="login-table-wrap">
+          <table class="login-table">
+            <thead>
+              <tr>
+                <th>Discord-Konto</th>
+                <th>Discord-ID</th>
+                <th>Erste Anmeldung</th>
+                <th>Letzte Anmeldung</th>
+                <th>Anzahl</th>
+              </tr>
+            </thead>
+            <tbody id="loginTableBody">
+              <tr><td colspan="5">Anmeldedaten werden geladen …</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="privacy-note">
+          Gespeichert werden nur Discord-ID, Anzeigename, Benutzername sowie Zeitpunkt und Anzahl erfolgreicher Anmeldungen.
+          Die Liste ist ausschließlich für den eingetragenen Owner abrufbar.
+        </div>
+        <div id="loginMessage" class="save-message" aria-live="polite"></div>
       </section>
 
       <div class="notice">

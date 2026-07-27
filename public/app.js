@@ -12,6 +12,13 @@ const cancelBtn = document.getElementById("cancelBtn");
 const saveBtn = document.getElementById("saveBtn");
 const teamGrid = document.getElementById("teamGrid");
 const saveMessage = document.getElementById("saveMessage");
+const loginAdmin = document.getElementById("login-admin");
+const loginNavLink = document.getElementById("loginNavLink");
+const refreshLoginsBtn = document.getElementById("refreshLoginsBtn");
+const uniqueUsersCount = document.getElementById("uniqueUsersCount");
+const totalLoginsCount = document.getElementById("totalLoginsCount");
+const loginTableBody = document.getElementById("loginTableBody");
+const loginMessage = document.getElementById("loginMessage");
 
 function escapeAttribute(value) {
   return String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -38,6 +45,8 @@ function renderAuth() {
     loginBtn.hidden = false;
     logoutBtn.hidden = true;
     editBtn.hidden = true;
+    loginAdmin.hidden = true;
+    loginNavLink.hidden = true;
     state.editing = false;
     updateEditButtons();
     return;
@@ -62,7 +71,13 @@ function renderAuth() {
   loginBtn.hidden = true;
   logoutBtn.hidden = false;
   editBtn.hidden = !state.me.isOwner;
+  loginAdmin.hidden = !state.me.isOwner;
+  loginNavLink.hidden = !state.me.isOwner;
   updateEditButtons();
+
+  if (state.me.isOwner) {
+    loadLoginHistory();
+  }
 }
 
 function createViewCard(member) {
@@ -201,6 +216,95 @@ async function logout() {
   window.location.href = "/";
 }
 
+
+function formatDate(value) {
+  if (!value) return "–";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "–";
+
+  return new Intl.DateTimeFormat("de-DE", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(date);
+}
+
+function setLoginMessage(text, type = "") {
+  loginMessage.textContent = text;
+  loginMessage.className = `save-message ${type}`.trim();
+}
+
+function renderLoginHistory(data) {
+  uniqueUsersCount.textContent = String(data.uniqueUsers || 0);
+  totalLoginsCount.textContent = String(data.totalLogins || 0);
+  loginTableBody.replaceChildren();
+
+  if (!Array.isArray(data.users) || data.users.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 5;
+    cell.textContent = "Bisher hat sich noch niemand erfolgreich angemeldet.";
+    row.append(cell);
+    loginTableBody.append(row);
+    return;
+  }
+
+  for (const user of data.users) {
+    const row = document.createElement("tr");
+
+    const accountCell = document.createElement("td");
+    const displayName = document.createElement("strong");
+    displayName.textContent = user.username || "Unbekannt";
+    const username = document.createElement("div");
+    username.className = "auth-sub";
+    username.textContent = user.rawUsername ? `@${user.rawUsername}` : "";
+    accountCell.append(displayName, username);
+
+    const idCell = document.createElement("td");
+    idCell.className = "discord-id";
+    idCell.textContent = user.id || "–";
+
+    const firstCell = document.createElement("td");
+    firstCell.textContent = formatDate(user.firstLoginAt);
+
+    const lastCell = document.createElement("td");
+    lastCell.textContent = formatDate(user.lastLoginAt);
+
+    const countCell = document.createElement("td");
+    countCell.textContent = String(user.loginCount || 0);
+
+    row.append(accountCell, idCell, firstCell, lastCell, countCell);
+    loginTableBody.append(row);
+  }
+}
+
+async function loadLoginHistory() {
+  if (!state.me?.isOwner) return;
+
+  refreshLoginsBtn.disabled = true;
+  setLoginMessage("Anmeldeliste wird geladen …");
+
+  try {
+    const response = await fetch("/api/admin/logins");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Anmeldeliste konnte nicht geladen werden.");
+    }
+
+    renderLoginHistory(data);
+    setLoginMessage(
+      data.updatedAt
+        ? `Zuletzt aktualisiert: ${formatDate(data.updatedAt)}`
+        : "Noch keine Anmeldung gespeichert.",
+      "ok"
+    );
+  } catch (error) {
+    setLoginMessage(error.message, "error");
+  } finally {
+    refreshLoginsBtn.disabled = false;
+  }
+}
+
 async function load() {
   try {
     const [meResponse, teamResponse] = await Promise.all([
@@ -222,6 +326,7 @@ editBtn.addEventListener("click", startEditing);
 cancelBtn.addEventListener("click", cancelEditing);
 saveBtn.addEventListener("click", saveTeam);
 logoutBtn.addEventListener("click", logout);
+refreshLoginsBtn.addEventListener("click", loadLoginHistory);
 
 const search = document.getElementById("search");
 const sections = [...document.querySelectorAll(".rules-section")];
