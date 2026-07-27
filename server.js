@@ -13,6 +13,7 @@ const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const DISCORD_API = "https://discord.com/api/v10";
 const TEAM_FILE = path.join(__dirname, "data", "team.json");
+const LOGINS_FILE = path.join(__dirname, "data", "logins.json");
 
 const requiredEnv = [
   "DISCORD_CLIENT_ID",
@@ -80,6 +81,60 @@ function requireOwner(req, res, next) {
 
 function readTeam() {
   return JSON.parse(fs.readFileSync(TEAM_FILE, "utf8"));
+}
+
+function readLogins() {
+  if (!fs.existsSync(LOGINS_FILE)) {
+    return { updatedAt: null, users: [] };
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(LOGINS_FILE, "utf8"));
+    return {
+      updatedAt: parsed.updatedAt || null,
+      users: Array.isArray(parsed.users) ? parsed.users : []
+    };
+  } catch {
+    return { updatedAt: null, users: [] };
+  }
+}
+
+function writeJsonAtomic(filePath, value) {
+  const tempFile = `${filePath}.tmp`;
+  fs.writeFileSync(tempFile, JSON.stringify(value, null, 2), "utf8");
+  fs.renameSync(tempFile, filePath);
+}
+
+function recordSuccessfulLogin(user) {
+  const now = new Date().toISOString();
+  const logins = readLogins();
+  const index = logins.users.findIndex((entry) => entry.id === user.id);
+
+  const cleanUser = {
+    id: String(user.id),
+    username: cleanText(user.global_name || user.username || "Unbekannt", 100),
+    rawUsername: cleanText(user.username || "Unbekannt", 100),
+    firstLoginAt: now,
+    lastLoginAt: now,
+    loginCount: 1
+  };
+
+  if (index >= 0) {
+    const previous = logins.users[index];
+    logins.users[index] = {
+      ...previous,
+      username: cleanUser.username,
+      rawUsername: cleanUser.rawUsername,
+      firstLoginAt: previous.firstLoginAt || now,
+      lastLoginAt: now,
+      loginCount: Math.max(0, Number(previous.loginCount) || 0) + 1
+    };
+  } else {
+    logins.users.push(cleanUser);
+  }
+
+  logins.updatedAt = now;
+  writeJsonAtomic(LOGINS_FILE, logins);
 }
 
 function cleanText(value, maxLength) {
@@ -196,6 +251,7 @@ app.get("/auth/discord/callback", async (req, res) => {
       avatar: user.avatar || null
     };
 
+    recordSuccessfulLogin(user);
     req.session.save(() => res.redirect("/?login=success"));
   } catch (error) {
     console.error(error);
@@ -228,6 +284,20 @@ app.get("/api/me", (req, res) => {
 
 app.get("/api/team", (req, res) => {
   res.json(readTeam());
+});
+
+app.get("/api/admin/logins", requireOwner, (req, res) => {
+  const logins = readLogins();
+  const users = [...logins.users].sort((a, b) => {
+    return String(b.lastLoginAt || "").localeCompare(String(a.lastLoginAt || ""));
+  });
+
+  res.json({
+    updatedAt: logins.updatedAt,
+    uniqueUsers: users.length,
+    totalLogins: users.reduce((sum, user) => sum + (Number(user.loginCount) || 0), 0),
+    users
+  });
 });
 
 app.put("/api/team", requireOwner, (req, res) => {
