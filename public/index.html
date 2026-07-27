@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Offizielles Regelwerk des Discord-Servers Projekt Mittelberg.">
+  <title>Projekt Mittelberg – Regelwerk</title>
+  <style>
+    :root {
+      --bg: #090d12;
+      --panel: #101720;
+      --panel2: #151e29;
+      --text: #edf3f8;
+      --muted: #9eacba;
+      --line: #273444;
+      --accent: #7fd14b;
+      --accent2: #aeea82;
+      --danger: #ff7070;
+      --warning: #ffd06a;
+      --discord: #5865f2;
+      --radius: 18px;
+      --shadow: 0 18px 48px rgba(0,0,0,.30);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(127,209,75,.12), transparent 29%),
+        radial-gradient(circle at 88% 12%, rgba(88,101,242,.12), transparent 25%),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+    a { color: inherit; }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .layout { display: grid; grid-template-columns: 285px minmax(0,1fr); min-height: 100vh; }
+    aside {
+      position: sticky; top: 0; height: 100vh; overflow: auto;
+      padding: 22px 17px; border-right: 1px solid var(--line);
+      background: rgba(9,13,18,.90); backdrop-filter: blur(16px);
+    }
+    .brand { display:flex; gap:12px; align-items:center; padding:5px 7px 18px; border-bottom:1px solid var(--line); margin-bottom:17px; }
+    .brand-mark { width:46px; height:46px; display:grid; place-items:center; border-radius:13px; color:#071006; font-weight:1000; background:linear-gradient(145deg,var(--accent2),var(--accent)); }
+    .brand strong { display:block; }
+    .brand span { display:block; color:var(--muted); font-size:12px; }
+    .search { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:12px; color:var(--text); background:var(--panel); outline:none; margin-bottom:14px; }
+    .search:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(127,209,75,.12); }
+    nav a { display:block; text-decoration:none; padding:8px 10px; margin:3px 0; border-radius:10px; color:#c7d1dc; font-size:14px; }
+    nav a:hover, nav a.active { background:var(--panel2); color:#fff; }
+    .side-note { margin-top:18px; padding:13px; border:1px solid rgba(127,209,75,.25); border-radius:12px; background:rgba(127,209,75,.07); color:#cfe7c1; font-size:12px; }
+    main { width:100%; max-width:1080px; margin:0 auto; padding:34px 32px 75px; }
+    .hero {
+      position:relative; overflow:hidden; padding:42px; border:1px solid var(--line); border-radius:26px;
+      background:linear-gradient(135deg,rgba(127,209,75,.14),rgba(16,23,32,.96) 48%);
+      box-shadow:var(--shadow); margin-bottom:18px;
+    }
+    .hero::after { content:"PM"; position:absolute; right:25px; bottom:-43px; font-size:175px; line-height:1; font-weight:1000; color:rgba(255,255,255,.035); }
+    .eyebrow { display:inline-flex; padding:6px 11px; border-radius:999px; border:1px solid rgba(127,209,75,.28); background:rgba(127,209,75,.08); color:#d4ecc6; font-size:12px; font-weight:800; text-transform:uppercase; }
+    h1 { margin:15px 0 9px; font-size:clamp(36px,6vw,64px); line-height:1.03; letter-spacing:-2px; }
+    .hero p { margin:0; max-width:760px; color:#c2cdda; font-size:17px; }
+    .meta { display:flex; flex-wrap:wrap; gap:9px; margin-top:22px; }
+    .meta span { padding:7px 11px; border:1px solid var(--line); border-radius:999px; background:rgba(9,13,18,.50); color:#bdc8d4; font-size:12px; }
+    .auth-panel {
+      display:flex; align-items:center; justify-content:space-between; gap:15px; flex-wrap:wrap;
+      margin:0 0 22px; padding:16px 18px; border:1px solid var(--line); border-radius:16px; background:rgba(16,23,32,.94);
+    }
+    .auth-left { display:flex; align-items:center; gap:12px; min-width:0; }
+    .avatar { width:43px; height:43px; border-radius:50%; object-fit:cover; background:var(--panel2); border:1px solid var(--line); }
+    .auth-title { font-weight:850; }
+    .auth-sub { color:var(--muted); font-size:13px; }
+    .auth-actions { display:flex; gap:9px; flex-wrap:wrap; }
+    .btn { border:1px solid var(--line); border-radius:11px; padding:10px 14px; color:var(--text); background:var(--panel2); font-weight:750; }
+    .btn:hover { transform:translateY(-1px); }
+    .btn.discord { border-color:#6e79ff; background:var(--discord); color:#fff; text-decoration:none; }
+    .btn.primary { border-color:#68ad3e; background:linear-gradient(145deg,var(--accent2),var(--accent)); color:#071006; }
+    .btn.danger { border-color:rgba(255,112,112,.40); color:#ffd3d3; background:rgba(255,112,112,.08); }
+    .btn[hidden] { display:none; }
+    .status-badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:11px; font-weight:850; margin-left:5px; }
+    .status-owner { color:#071006; background:var(--accent); }
+    .status-view { color:#dae0ff; background:rgba(88,101,242,.20); border:1px solid rgba(88,101,242,.35); }
+    .notice { margin:17px 0 23px; padding:15px 17px; border:1px solid rgba(255,208,106,.26); border-left:4px solid var(--warning); border-radius:12px; color:#f1e3bd; background:rgba(255,208,106,.06); }
+    .team-section {
+      margin:18px 0 27px; padding:27px; border:1px solid var(--line); border-radius:var(--radius);
+      background:linear-gradient(135deg,rgba(127,209,75,.09),rgba(16,23,32,.97)); box-shadow:var(--shadow);
+    }
+    .team-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+    .team-kicker { color:var(--accent); font-size:12px; font-weight:900; letter-spacing:.8px; text-transform:uppercase; }
+    .team-head h2 { margin:4px 0 5px; font-size:27px; }
+    .team-head p { margin:0; color:var(--muted); }
+    .team-actions { display:flex; gap:9px; flex-wrap:wrap; }
+    .team-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+    .team-card { display:flex; gap:15px; align-items:flex-start; padding:19px; border:1px solid var(--line); border-radius:16px; background:rgba(9,13,18,.55); }
+    .badge { width:50px; height:50px; flex:0 0 auto; display:grid; place-items:center; border-radius:14px; color:#071006; font-weight:1000; background:linear-gradient(145deg,var(--accent2),var(--accent)); }
+    .team-content { min-width:0; width:100%; }
+    .role { display:block; color:var(--accent); font-size:12px; font-weight:900; letter-spacing:.55px; text-transform:uppercase; margin-bottom:2px; }
+    .member-name { font-size:19px; font-weight:900; color:#fff; overflow-wrap:anywhere; }
+    .member-description { margin:7px 0 0; color:#b9c5d1; font-size:14px; line-height:1.58; }
+    .edit-field { width:100%; border:1px solid var(--accent); border-radius:10px; color:var(--text); background:var(--panel); padding:9px 10px; outline:none; }
+    textarea.edit-field { min-height:105px; resize:vertical; margin-top:8px; line-height:1.5; }
+    .save-message { margin-top:12px; min-height:23px; font-size:13px; font-weight:750; }
+    .save-message.ok { color:#cdefb5; }
+    .save-message.error { color:#ffb9b9; }
+    .rules-section { scroll-margin-top:20px; margin:18px 0; padding:27px; border:1px solid var(--line); border-radius:var(--radius); background:rgba(16,23,32,.93); box-shadow:0 10px 30px rgba(0,0,0,.12); }
+    .section-head { display:flex; gap:13px; align-items:flex-start; margin-bottom:15px; }
+    .number { width:38px; height:38px; flex:0 0 auto; display:grid; place-items:center; border:1px solid rgba(127,209,75,.30); border-radius:11px; color:#e1f3d6; background:rgba(127,209,75,.08); font-weight:900; }
+    h2 { margin:0; font-size:22px; line-height:1.3; }
+    .section-sub { margin:4px 0 0; color:var(--muted); font-size:14px; }
+    ol.rules { margin:0; padding-left:23px; }
+    ol.rules li { margin:10px 0; padding-left:5px; color:#d5dde7; }
+    ol.rules li::marker { color:var(--accent); font-weight:900; }
+    strong { color:#fff; }
+    .danger { margin-top:14px; padding:12px 14px; border:1px solid rgba(255,112,112,.28); border-radius:10px; color:#ffd0d0; background:rgba(255,112,112,.06); }
+    .sanctions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:15px; }
+    .sanction { padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--panel2); }
+    .sanction b { display:block; margin-bottom:4px; }
+    .sanction span { color:var(--muted); font-size:13px; }
+    .accept-box { margin-top:27px; padding:23px; border:1px solid rgba(127,209,75,.28); border-radius:var(--radius); background:linear-gradient(135deg,rgba(127,209,75,.10),rgba(16,23,32,.97)); }
+    .accept-row { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+    .accept-row p { margin:4px 0 0; color:var(--muted); }
+    .accepted { display:none; margin-top:12px; color:#cdefb5; font-weight:800; }
+    .hidden-by-search { display:none!important; }
+    footer { padding:33px 10px 0; text-align:center; color:var(--muted); font-size:13px; }
+    @media (max-width:900px) {
+      .layout { display:block; }
+      aside { position:static; height:auto; border-right:0; border-bottom:1px solid var(--line); }
+      nav { display:flex; gap:4px; overflow-x:auto; }
+      nav a { white-space:nowrap; }
+      .side-note { display:none; }
+      main { padding:24px 17px 60px; }
+      .hero { padding:30px 23px; }
+      .sanctions { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:680px) {
+      .team-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:520px) {
+      .rules-section, .team-section { padding:21px 17px; }
+      .sanctions { grid-template-columns:1fr; }
+      .hero::after { font-size:105px; }
+      h1 { letter-spacing:-1px; }
+      .auth-actions, .team-actions { width:100%; }
+      .auth-actions .btn, .team-actions .btn { flex:1; text-align:center; }
+    }
+    @media print {
+      aside, .auth-panel, .team-actions, .accept-box { display:none!important; }
+      body { background:white; color:black; }
+      main { max-width:none; padding:0; }
+      .hero, .team-section, .rules-section, .notice { color:black; background:white; box-shadow:none; border-color:#aaa; }
+      .hero p, .team-head p, .member-description, .section-sub, ol.rules li, footer { color:#222; }
+      h1, h2, strong, .member-name { color:black; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="brand">
+        <div class="brand-mark">PM</div>
+        <div><strong>Projekt Mittelberg</strong><span>Offizielles Regelwerk</span></div>
+      </div>
+      <input id="search" class="search" type="search" placeholder="Regeln durchsuchen …" aria-label="Regelwerk durchsuchen">
+      <nav>
+        <a href="#team-section">Projekt Mittelberg Team</a>
+        <a href="#grundlagen">1. Geltungsbereich</a>
+        <a href="#verhalten">2. Verhalten</a>
+        <a href="#discord">3. Discord-Nutzung</a>
+        <a href="#mods">4. Mod-Tausch</a>
+        <a href="#rechte">5. Rechte & Urheberrecht</a>
+        <a href="#dateien">6. Dateien & Sicherheit</a>
+        <a href="#videodrehs">7. Videodrehs</a>
+        <a href="#voice">8. Sprachkanäle</a>
+        <a href="#werbung">9. Werbung</a>
+        <a href="#team">10. Team-Anweisungen</a>
+        <a href="#support">11. Support & Meldungen</a>
+        <a href="#sanktionen">12. Sanktionen</a>
+        <a href="#schluss">13. Schlussbestimmungen</a>
+      </nav>
+      <div class="side-note">Nur die eingetragene Discord-ID des Owners kann Teamdaten speichern.</div>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <span class="eyebrow">Landwirtschafts-Simulator 22 · Discord</span>
+        <h1>Projekt Mittelberg</h1>
+        <p>Offizielles und verbindliches Regelwerk für unsere LS22-Community, den Mod-Tausch sowie Video- und Serverprojekte.</p>
+        <div class="meta">
+          <span>Stand: 27. Juli 2026</span>
+          <span>Version 2.0</span>
+          <span>Gültig für alle Mitglieder</span>
+        </div>
+      </header>
+
+      <section class="auth-panel" aria-label="Discord-Anmeldung">
+        <div id="authLeft" class="auth-left">
+          <div class="avatar"></div>
+          <div>
+            <div class="auth-title">Nicht angemeldet</div>
+            <div class="auth-sub">Das Regelwerk kann trotzdem angesehen werden.</div>
+          </div>
+        </div>
+        <div class="auth-actions">
+          <a id="loginBtn" class="btn discord" href="/auth/discord">Mit Discord anmelden</a>
+          <button id="logoutBtn" class="btn danger" type="button" hidden>Abmelden</button>
+        </div>
+      </section>
+
+      <div class="notice">
+        <strong>Bearbeitungsschutz:</strong> Die Webseite prüft deine numerische Discord-Benutzer-ID auf dem Server.
+        Nur der eingetragene Owner erhält Schreibzugriff.
+      </div>
+
+      <section id="team-section" class="team-section">
+        <div class="team-head">
+          <div>
+            <div class="team-kicker">Offizielles Team</div>
+            <h2>Projekt Mittelberg Team</h2>
+            <p>Serverleitung, Moderation und Support des Projekts.</p>
+          </div>
+          <div class="team-actions">
+            <button id="editBtn" class="btn" type="button" hidden>Team bearbeiten</button>
+            <button id="cancelBtn" class="btn danger" type="button" hidden>Abbrechen</button>
+            <button id="saveBtn" class="btn primary" type="button" hidden>Änderungen speichern</button>
+          </div>
+        </div>
+        <div id="teamGrid" class="team-grid" aria-live="polite"></div>
+        <div id="saveMessage" class="save-message" aria-live="polite"></div>
+      </section>
+
+      <div class="notice">
+        <strong>Wichtiger Hinweis:</strong> Unwissenheit schützt nicht vor Sanktionen.
+        Jedes Mitglied ist selbst dafür verantwortlich, sich über Änderungen des Regelwerks zu informieren.
+      </div>
+
+      <section id="grundlagen" class="rules-section">
+        <div class="section-head">
+          <div class="number">1</div>
+          <div>
+            <h2>Geltungsbereich und Grundsätze</h2>
+            <p class="section-sub">Für wen das Regelwerk gilt und welche Pflichten entstehen.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Dieses Regelwerk gilt für <strong>alle Mitglieder, Gäste, Partner, Teammitglieder und Projektteilnehmer</strong> des Discord-Servers „Projekt Mittelberg“.</li>
+          <li>Mit dem Betreten, Nutzen oder Verbleib auf dem Server wird das Regelwerk vollständig anerkannt.</li>
+          <li>Zusätzliche Hinweise in Kanalbeschreibungen, Ankündigungen, Tickets oder Projektbriefings sind ebenfalls verbindlich.</li>
+          <li>Das Serverteam besitzt das Hausrecht und entscheidet bei nicht eindeutig geregelten Fällen nach Verhältnismäßigkeit und zum Schutz der Community.</li>
+          <li>Das Ausnutzen von Regelungslücken, technischen Fehlern oder unklaren Formulierungen ist untersagt.</li>
+        </ol>
+      </section>
+
+<section id="verhalten" class="rules-section">
+        <div class="section-head">
+          <div class="number">2</div>
+          <div>
+            <h2>Allgemeines Verhalten</h2>
+            <p class="section-sub">Respekt, Sicherheit und ein professioneller Umgang.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Behandle andere Mitglieder respektvoll. Beleidigungen, Provokationen, Mobbing, Belästigung und gezieltes Stören sind verboten.</li>
+          <li>Diskriminierende, menschenverachtende, extremistische oder sexualisierte Inhalte werden nicht toleriert.</li>
+          <li>Drohungen, Erpressung, Doxxing, das Veröffentlichen privater Daten oder Aufrufe zu Angriffen führen in der Regel zum sofortigen Ausschluss.</li>
+          <li>Streitigkeiten sind nicht öffentlich auszutragen. Nutze dafür den Support und bleibe sachlich.</li>
+          <li>Das Vortäuschen einer Teamrolle, Identitätsdiebstahl und das Nachahmen anderer Nutzer sind untersagt.</li>
+          <li>Absichtliche Falschinformationen, Rufschädigung und manipulierte Beweise sind verboten.</li>
+          <li>Inhalte, die gegen Discord-Richtlinien oder geltendes Recht verstoßen, sind vollständig untersagt.</li>
+        </ol>
+      </section>
+
+<section id="discord" class="rules-section">
+        <div class="section-head">
+          <div class="number">3</div>
+          <div>
+            <h2>Nutzung des Discord-Servers</h2>
+            <p class="section-sub">Ordnung in Textkanälen, Namen, Profilen und Nachrichten.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Nutze jeden Kanal ausschließlich für den vorgesehenen Zweck.</li>
+          <li>Spam, Flooding, unnötige Erwähnungen, Soundboard-Spam und wiederholte identische Nachrichten sind untersagt.</li>
+          <li>Teammitglieder dürfen nur bei einem berechtigten und dringenden Anliegen markiert werden.</li>
+          <li>Benutzernamen, Avatare, Statusmeldungen und Profilbeschreibungen müssen angemessen und eindeutig zuordenbar sein.</li>
+          <li>Das Umgehen von Filtern, AutoMod, Mutes, Sperren oder sonstigen Schutzmaßnahmen ist verboten.</li>
+          <li>Zweitaccounts dürfen nicht genutzt werden, um Sanktionen zu umgehen, Abstimmungen zu manipulieren oder Vorteile zu erlangen.</li>
+          <li>Private Nachrichten an Mitglieder zu Werbe-, Belästigungs- oder Betrugszwecken sind untersagt.</li>
+        </ol>
+      </section>
+
+<section id="mods" class="rules-section">
+        <div class="section-head">
+          <div class="number">4</div>
+          <div>
+            <h2>Mod-Tausch und Mod-Bereitstellung</h2>
+            <p class="section-sub">Klare Regeln für einen fairen und sicheren Austausch.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Mods dürfen auf dem Server weitergegeben oder getauscht werden, auch wenn die weitergebende Person den Mod nicht selbst erstellt hat.</li>
+          <li>Scamming, Betrug, Täuschung oder das absichtliche Zurückhalten vereinbarter Mods ist strengstens verboten.</li>
+          <li>Beim Tauschen müssen Inhalt, Version, erforderliche DLCs, bekannte Fehler und Herkunft wahrheitsgemäß angegeben werden.</li>
+          <li>Ein Tausch muss freiwillig erfolgen. Druck, Drohungen oder Manipulation sind untersagt.</li>
+          <li>Mods dürfen nicht absichtlich beschädigt, mit versteckten Dateien versehen oder unter falschem Namen weitergegeben werden.</li>
+          <li>Schadsoftware, Phishing-Dateien oder andere gefährliche Inhalte führen in der Regel zum sofortigen permanenten Ausschluss.</li>
+          <li>Das Serverteam ist nicht Vertragspartei eines privaten Tauschs. Nachweisbarer Betrug wird dennoch serverintern sanktioniert.</li>
+          <li>Bei Streitigkeiten sind vollständige und unveränderte Nachweise vorzulegen. Gefälschte oder gekürzte Beweise werden sanktioniert.</li>
+        </ol>
+        <div class="danger"><strong>Null-Toleranz:</strong> Scamming, bewusster Betrug, Schadsoftware und manipulierte Dateien können ohne Vorwarnung zu einem permanenten Ausschluss führen.</div>
+      </section>
+
+<section id="rechte" class="rules-section">
+        <div class="section-head">
+          <div class="number">5</div>
+          <div>
+            <h2>Urheberrecht, Credits und Bearbeitungen</h2>
+            <p class="section-sub">Schutz der Arbeit von Moddern, Designern und Content-Erstellern.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Urheber, Konvertierer, Mapper, Scripter und weitere Beteiligte sind korrekt zu nennen, sofern dies verlangt wird.</li>
+          <li>Credits dürfen nicht entfernt, verändert oder als eigene Leistung ausgegeben werden.</li>
+          <li>Umbauten, Reuploads, Konvertierungen oder öffentliche Veröffentlichungen benötigen die Zustimmung des jeweiligen Rechteinhabers.</li>
+          <li>Eine Freigabe für die private Nutzung bedeutet nicht automatisch eine Freigabe zur Weitergabe oder Veröffentlichung.</li>
+          <li>Bei unklarer Rechte-Situation darf die Datei nicht angeboten werden, bis eine eindeutige Erlaubnis vorliegt.</li>
+          <li>Das Serverteam kann Inhalte vorläufig entfernen, wenn glaubhafte Hinweise auf eine Rechteverletzung bestehen.</li>
+        </ol>
+      </section>
+
+<section id="dateien" class="rules-section">
+        <div class="section-head">
+          <div class="number">6</div>
+          <div>
+            <h2>Dateien, Links und technische Sicherheit</h2>
+            <p class="section-sub">Schutz vor Malware, Phishing und manipulierten Downloads.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Downloads sind nur über seriöse, nachvollziehbare und vom Server erlaubte Plattformen zu teilen.</li>
+          <li>URL-Shortener, verschleierte Weiterleitungen, Phishing-Seiten und Downloadseiten mit irreführenden Schaltflächen sind verboten.</li>
+          <li>Ausführbare Dateien wie EXE, BAT, CMD, SCR oder MSI dürfen nur mit ausdrücklicher Genehmigung des Serverteams geteilt werden.</li>
+          <li>Passwörter für Archive müssen direkt beim Download angegeben werden. Versteckte oder nachträglich verlangte Gegenleistungen sind unzulässig.</li>
+          <li>Jedes Mitglied ist verpflichtet, Dateien vor der Weitergabe auf Schadsoftware zu prüfen.</li>
+          <li>Verdächtige Links oder Dateien sind sofort dem Team zu melden und dürfen nicht weiterverbreitet werden.</li>
+          <li>Das Sammeln von Zugangsdaten, Tokens, IP-Adressen oder anderen Daten ohne Einwilligung ist strengstens untersagt.</li>
+        </ol>
+      </section>
+
+<section id="videodrehs" class="rules-section">
+        <div class="section-head">
+          <div class="number">7</div>
+          <div>
+            <h2>Videodrehs und Projektteilnahme</h2>
+            <p class="section-sub">Verbindliche Regeln für Aufnahmen, Rollen und Produktionsabläufe.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Eine Anmeldung zu einem Videodreh ist verbindlich. Wer verhindert ist, muss rechtzeitig absagen.</li>
+          <li>Anweisungen der Aufnahmeleitung, Regie und zuständigen Teammitglieder sind während des Drehs zu befolgen.</li>
+          <li>Absichtliches Stören, Trollen, Rammen, Blockieren, Sound-Spam oder das Zerstören vorbereiteter Szenen ist verboten.</li>
+          <li>Fahrzeuge, Skins, Mods, Rollen und Namen sind so zu verwenden, wie es im Briefing festgelegt wurde.</li>
+          <li>Unveröffentlichte Szenen, Skripte, Mods, Story-Inhalte oder interne Informationen dürfen nicht ohne Freigabe veröffentlicht oder weitergegeben werden.</li>
+          <li>Bevor eine Person, ihre Stimme, ihr Discord-Name, ihr Ingame-Name oder ihr Verhalten in einem Video auf YouTube, TikTok, Instagram oder einer anderen Social-Media-Plattform veröffentlicht wird, muss diese Person vorher ausdrücklich gefragt werden und zustimmen.</li>
+          <li>Eigene Aufnahmen oder Livestreams während eines Projektdrehs sind nur mit Genehmigung der Projektleitung erlaubt.</li>
+          <li>Wer wiederholt unzuverlässig ist oder Drehs stört, kann zeitweise oder dauerhaft von Projekten ausgeschlossen werden.</li>
+          <li>Alle Teilnehmer müssen die verwendeten Mods rechtzeitig installieren und vor dem Termin testen.</li>
+        </ol>
+      </section>
+
+<section id="voice" class="rules-section">
+        <div class="section-head">
+          <div class="number">8</div>
+          <div>
+            <h2>Sprachkanäle und Kommunikation</h2>
+            <p class="section-sub">Klare, störungsfreie und respektvolle Sprachkommunikation.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Störgeräusche, dauerhaft offene Mikrofone, extremes Schreien, Soundboards und Musik ohne Zustimmung sind zu vermeiden.</li>
+          <li>Gespräche dürfen nicht heimlich aufgenommen oder veröffentlicht werden.</li>
+          <li>In Projekt- und Drehkanälen gilt Funkdisziplin. Unnötige Zwischenrufe sind zu unterlassen.</li>
+          <li>Das absichtliche Betreten gesperrter oder nicht zugewiesener Sprachkanäle ist untersagt.</li>
+          <li>Bei Aufforderung durch das Team ist das Mikrofon stummzuschalten oder der Kanal zu verlassen.</li>
+        </ol>
+      </section>
+
+<section id="werbung" class="rules-section">
+        <div class="section-head">
+          <div class="number">9</div>
+          <div>
+            <h2>Werbung, Einladungen und Partnerschaften</h2>
+            <p class="section-sub">Keine unerlaubte Eigenwerbung oder Mitgliederabwerbung.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Werbung für Discord-Server, Social-Media-Kanäle, Shops, Dienstleistungen oder Projekte ist nur in freigegebenen Bereichen erlaubt.</li>
+          <li>Werbung per Direktnachricht an Servermitglieder ist verboten.</li>
+          <li>Das gezielte Abwerben von Mitgliedern, Teammitgliedern oder Projektpartnern ist untersagt.</li>
+          <li>Partnerschaften werden ausschließlich durch die Serverleitung bestätigt.</li>
+          <li>Affiliate-Links, Spendenaufrufe oder kostenpflichtige Angebote benötigen vorherige Genehmigung.</li>
+        </ol>
+      </section>
+
+<section id="team" class="rules-section">
+        <div class="section-head">
+          <div class="number">10</div>
+          <div>
+            <h2>Team-Anweisungen und Rollen</h2>
+            <p class="section-sub">Verbindlichkeit von Moderations- und Projektentscheidungen.</p>
+          </div>
+        </div>
+        <p class="section-sub" style="margin: 0 0 16px;">
+          Die aktuellen Mitglieder und Rollen sind im Bereich <strong>„Projekt Mittelberg Team“</strong> aufgeführt.
+        </p>
+        <ol class="rules">
+          <li>Anweisungen der Serverleitung und der zuständigen Teammitglieder sind zu befolgen, sofern sie dem sicheren und geordneten Betrieb dienen.</li>
+          <li>Teamentscheidungen sind nicht in öffentlichen Kanälen zu diskutieren. Nutze dafür das vorgesehene Beschwerdeverfahren.</li>
+          <li>Teamrollen dürfen nicht ausgenutzt werden. Verdachtsfälle sind direkt an die Serverleitung zu melden.</li>
+          <li>Das Fordern, Kaufen oder Erschleichen von Rollen, Rechten oder internen Informationen ist untersagt.</li>
+          <li>Interne Teamgespräche, Protokolle, Bewerbungen und vertrauliche Inhalte dürfen nicht veröffentlicht werden.</li>
+        </ol>
+      </section>
+
+<section id="support" class="rules-section">
+        <div class="section-head">
+          <div class="number">11</div>
+          <div>
+            <h2>Support, Tickets und Meldungen</h2>
+            <p class="section-sub">So werden Verstöße korrekt und nachvollziehbar gemeldet.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Tickets dürfen nur für echte Anliegen erstellt werden. Testtickets, Spam und Provokationen sind verboten.</li>
+          <li>Bei Meldungen sind Nutzername, Zeitpunkt, Sachverhalt und möglichst vollständige Nachweise anzugeben.</li>
+          <li>Beweise dürfen nicht manipuliert, zugeschnitten oder aus dem Zusammenhang gerissen werden.</li>
+          <li>Öffentliche Hetzjagden, Namenslisten und eigenmächtige Sanktionen gegen andere Mitglieder sind untersagt.</li>
+          <li>Supportgespräche sind vertraulich zu behandeln und dürfen nicht ohne Zustimmung veröffentlicht werden.</li>
+          <li>Missbrauch des Meldesystems kann selbst sanktioniert werden.</li>
+        </ol>
+      </section>
+
+<section id="sanktionen" class="rules-section">
+        <div class="section-head">
+          <div class="number">12</div>
+          <div>
+            <h2>Sanktionen und Beschwerdeverfahren</h2>
+            <p class="section-sub">Mögliche Folgen bei Regelverstößen.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Sanktionen richten sich nach Schwere, Absicht, Vorgeschichte, Einsicht und möglichem Schaden.</li>
+          <li>Das Team ist nicht verpflichtet, jede Sanktionsstufe einzeln anzuwenden.</li>
+          <li>Schwere Verstöße können sofort zu einem permanenten Ausschluss führen.</li>
+          <li>Der Versuch, eine Sanktion über Zweitaccounts oder andere Personen zu umgehen, verschärft die Sanktion.</li>
+          <li>Beschwerden müssen sachlich, vollständig und über den vorgesehenen Supportweg eingereicht werden.</li>
+          <li>Beleidigungen, Drohungen oder Spam im Beschwerdeverfahren führen zur Ablehnung und können weitere Sanktionen auslösen.</li>
+        </ol>
+        <div class="sanctions">
+          <div class="sanction"><b>Stufe 1</b><span>Hinweis oder mündliche Verwarnung</span></div>
+          <div class="sanction"><b>Stufe 2</b><span>Schriftliche Verwarnung, Mute oder Einschränkung</span></div>
+          <div class="sanction"><b>Stufe 3</b><span>Temporärer Ausschluss vom Server oder Projekt</span></div>
+          <div class="sanction"><b>Stufe 4</b><span>Permanenter Ausschluss und Sperre</span></div>
+        </div>
+      </section>
+
+<section id="schluss" class="rules-section">
+        <div class="section-head">
+          <div class="number">13</div>
+          <div>
+            <h2>Schlussbestimmungen</h2>
+            <p class="section-sub">Änderungen, Verantwortung und Inkrafttreten.</p>
+          </div>
+        </div>
+        <ol class="rules">
+          <li>Das Regelwerk kann jederzeit angepasst werden, wenn dies für Sicherheit, Fairness oder den Serverbetrieb erforderlich ist.</li>
+          <li>Wesentliche Änderungen werden nach Möglichkeit über einen Ankündigungskanal mitgeteilt.</li>
+          <li>Die weitere Nutzung des Servers nach einer Änderung gilt als Zustimmung zur aktualisierten Fassung.</li>
+          <li>Sollten einzelne Regelungen unwirksam oder nicht anwendbar sein, bleiben die übrigen Regeln bestehen.</li>
+          <li>Dieses Regelwerk tritt mit seiner Veröffentlichung in Kraft.</li>
+        </ol>
+      </section>
+
+      <section class="accept-box">
+        <div class="accept-row">
+          <div>
+            <h2>Regelwerk gelesen?</h2>
+            <p>Die Bestätigung wird nur lokal in deinem Browser gespeichert.</p>
+          </div>
+          <div>
+            <button class="btn" type="button" onclick="window.print()">Drucken / PDF</button>
+            <button id="acceptBtn" class="btn primary" type="button">Regelwerk akzeptieren</button>
+          </div>
+        </div>
+        <div id="accepted" class="accepted">✓ Regelwerk wurde auf diesem Gerät akzeptiert.</div>
+      </section>
+
+      <footer>© 2026 Projekt Mittelberg · Landwirtschafts-Simulator 22 Community</footer>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

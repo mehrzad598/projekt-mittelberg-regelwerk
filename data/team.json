@@ -1,0 +1,47 @@
+{
+  "updatedAt": "2026-07-27T00:00:00.000Z",
+  "members": [
+    {
+      "id": "owner",
+      "role": "Owner",
+      "badge": "O",
+      "name": "milo009357",
+      "description": "Hauptverantwortlich für den Server, die Projektleitung, wichtige Entscheidungen und die allgemeine Entwicklung von Projekt Mittelberg."
+    },
+    {
+      "id": "co-owner",
+      "role": "Co-Owner",
+      "badge": "CO",
+      "name": "leon616717",
+      "description": "Unterstützt die Serverleitung bei Organisation, Moderation, Abläufen und Projekten und vertritt den Owner bei Bedarf."
+    },
+    {
+      "id": "admin",
+      "role": "Admin",
+      "badge": "A",
+      "name": "Noch nicht vergeben",
+      "description": "Verantwortlich für Moderation, Regelumsetzung, wichtige Supportfälle und einen geordneten Ablauf auf dem Server."
+    },
+    {
+      "id": "test-admin",
+      "role": "Test-Admin",
+      "badge": "TA",
+      "name": "Noch nicht vergeben",
+      "description": "Befindet sich in der Testphase für die Admin-Rolle und unterstützt das Team unter Aufsicht bei Moderationsaufgaben."
+    },
+    {
+      "id": "supporter",
+      "role": "Supporter",
+      "badge": "S",
+      "name": "Noch nicht vergeben",
+      "description": "Hilft Mitgliedern bei Fragen, Tickets, Problemen mit Mods und organisatorischen Anliegen rund um Projekt Mittelberg."
+    },
+    {
+      "id": "test-supporter",
+      "role": "Test-Supporter",
+      "badge": "TS",
+      "name": "Noch nicht vergeben",
+      "description": "Befindet sich in der Testphase und sammelt unter Anleitung Erfahrung im Support und im Umgang mit Mitgliedern."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+PROJEKT MITTELBERG – DISCORD-LOGIN UND OWNER-BEARBEITUNG
+================================================================
+
+WAS DIESE VERSION MACHT
+-----------------------
+- Jeder darf das Regelwerk ansehen.
+- Jeder kann sich mit Discord anmelden.
+- Nur die Discord-Benutzer-ID aus OWNER_DISCORD_ID darf Teamdaten bearbeiten.
+- Die Sperre wird auf dem Server geprüft und kann nicht nur durch den Browser umgangen werden.
+- Änderungen werden dauerhaft in data/team.json gespeichert.
+- Bearbeitbar sind die Namen und Beschreibungstexte von:
+  Owner, Co-Owner, Admin, Test-Admin, Supporter und Test-Supporter.
+
+WICHTIG
+-------
+Diese Version kann nicht mehr nur per Doppelklick auf index.html benutzt werden.
+Discord-Login benötigt einen laufenden Node.js-Server und eine Discord-Anwendung.
+
+1. DEINE DISCORD-BENUTZER-ID KOPIEREN
+-------------------------------------
+- Discord öffnen.
+- Benutzereinstellungen > Erweitert > Entwicklermodus einschalten.
+- Rechtsklick auf dein eigenes Profil.
+- Benutzer-ID kopieren.
+- Diese Zahl kommt später bei OWNER_DISCORD_ID hinein.
+
+2. DISCORD-ANWENDUNG ERSTELLEN
+------------------------------
+- Öffne das Discord Developer Portal.
+- Erstelle eine neue Application, z. B. "Projekt Mittelberg Regelwerk".
+- Öffne OAuth2.
+- Trage bei Redirects exakt ein:
+  http://localhost:3000/auth/discord/callback
+- Kopiere die Application ID / Client ID.
+- Kopiere unter OAuth2 oder General Information das Client Secret.
+- Das Client Secret niemals öffentlich posten oder in Discord schicken.
+
+3. EINSTELLUNGEN EINTRAGEN
+--------------------------
+- Kopiere .env.example.
+- Benenne die Kopie in .env um.
+- Öffne .env mit dem Editor.
+- Trage Client ID, Client Secret und deine numerische Benutzer-ID ein.
+- Ersetze SESSION_SECRET durch ein langes zufälliges Passwort.
+
+4. LOKAL STARTEN
+----------------
+Voraussetzung: Node.js 18 oder neuer.
+
+Im Projektordner ein Terminal öffnen und ausführen:
+
+  npm install
+  npm start
+
+Dann im Browser öffnen:
+
+  http://localhost:3000
+
+5. ONLINE STELLEN
+-----------------
+Für eine öffentliche Webseite brauchst du einen Webhoster, der Node.js ausführt.
+Dann:
+- DISCORD_REDIRECT_URI auf deine öffentliche HTTPS-Adresse ändern, z. B.
+  https://deine-domain.de/auth/discord/callback
+- Dieselbe Adresse im Discord Developer Portal als Redirect eintragen.
+- NODE_ENV=production setzen.
+- Die .env-Datei und das Client Secret niemals öffentlich hochladen.
+
+SICHERHEIT
+----------
+- Nur die numerische Discord-ID in OWNER_DISCORD_ID erhält Schreibzugriff.
+- Ein anderer Benutzer bekommt beim Speichern den Fehler 403.
+- Client Secret und SESSION_SECRET bleiben ausschließlich auf dem Server.
+- Vor dem ersten öffentlichen Einsatz sollte ein dauerhafter Session-Speicher
+  statt des eingebauten Memory-Stores verwendet werden.
