@@ -1,12 +1,12 @@
 {
   "name": "projekt-mittelberg-regelwerk",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
-  "description": "Projekt Mittelberg Regelwerk mit Discord-Login, Owner-Bearbeitung und Anmeldeliste",
+  "description": "Projekt Mittelberg Regelwerk mit Discord-Login, Owner-Bearbeitung, Anmeldeliste und Akzeptierungs\u00fcbersicht",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "check": "node --check server.js"
+    "start": "node acceptance-addon.js && node server.js",
+    "check": "node acceptance-addon.js && node --check server.js"
   },
   "engines": {
     "node": ">=18"
